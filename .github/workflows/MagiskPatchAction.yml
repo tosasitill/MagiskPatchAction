@@ -7,7 +7,7 @@ on:
         description: 'ROM 下载直链'
 
 jobs:
-  magisk-patch-boot:
+  MagiskPatchAction:
     runs-on: ubuntu-latest
 
     steps:
