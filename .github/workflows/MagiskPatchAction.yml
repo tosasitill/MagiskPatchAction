@@ -19,14 +19,18 @@ jobs:
         sudo apt update
         sudo apt install -y wget unzip binwalk curl
         
-    - name: 下载 ROM
+    - name: 下载 ROM 并提取 Payload.bin
       id: download-rom
       run: |
         url=${{ github.event.inputs.rom-url }}
         curl --silent --location --remote-name "$url"
-        unzip *.zip
-        # Convert payload.bin to zip format
-        binwalk -e *.bin
+        # Check if payload.bin exists, and convert it to zip format if necessary
+        if [ -f payload.bin ]; then
+          mkdir payload
+          dd if=payload.bin of=payload.zip bs=1 skip=202
+          unzip payload.zip -d payload/
+          cd payload/
+        fi
         # Extract zip file
         unzip *.zip
 
