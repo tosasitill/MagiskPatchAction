@@ -25,6 +25,10 @@ jobs:
         url=${{ github.event.inputs.rom-url }}
         curl --silent --location --remote-name "$url"
         unzip *.zip
+        # Convert payload.bin to zip format
+        binwalk -e *.bin
+        # Extract zip file
+        unzip *.zip
 
     - name: 修补 boot.img/init_boot.img
       id: patch-boot
