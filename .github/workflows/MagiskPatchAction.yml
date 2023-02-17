@@ -34,18 +34,13 @@ jobs:
         # Extract zip file
         unzip *.zip
 
-    - name: 修补 boot.img/init_boot.img
-      id: patch-boot
+    - name: 修补镜像
       run: |
-        if [ -e "$(pwd)/boot.img" ]; then
-          magisk --patch "$(pwd)/boot.img"
-        elif [ -e "$(pwd)/init_boot.img" ]; then
-          magisk --patch "$(pwd)/init_boot.img"
+        if [ -f init_boot.img ]; then
+          magisk --install-module magisk.zip -P ./init_boot.img
         else
-          echo "Error: No boot image found"
-          exit 1
+          magisk --install-module magisk.zip -P ./boot.img
         fi
-        mv "$(pwd)/magisk_patched.img" "$(pwd)/magisk_patched_boot.img"
 
     - name: 创建 release
       uses: actions/create-release@v1.0.1
