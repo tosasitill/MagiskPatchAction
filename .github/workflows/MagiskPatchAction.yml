@@ -37,7 +37,7 @@ jobs:
     - name: 安装 Magisk
       run: |
         wget -O magisk.zip https://github.com/topjohnwu/Magisk/releases/download/v25.2/Magisk-v25.2.apk
-        unzip magisk.zip magisk -d .
+        unzip magisk.zip
 
     - name: 设置环境变量
       run: |
