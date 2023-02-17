@@ -18,13 +18,13 @@ jobs:
       run: |
         sudo apt update
         sudo apt install -y wget unzip
-
+        
     - name: 下载 ROM
       id: download-rom
       run: |
         url=${{ github.event.inputs.rom-url }}
-        wget "$url" -O rom.zip
-        unzip rom.zip
+        curl --silent --location --remote-name "$url"
+        unzip *.zip
 
     - name: 修补 boot.img/init_boot.img
       id: patch-boot
