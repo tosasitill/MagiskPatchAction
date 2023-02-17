@@ -38,7 +38,6 @@ jobs:
       run: |
         wget -O Magisk.zip https://github.com/topjohnwu/Magisk/releases/download/v25.2/Magisk-v25.2.apk
         unzip Magisk.zip magisk -d .
-        rm Magisk.zip
 
     - name: 设置环境变量
       run: |
@@ -47,9 +46,9 @@ jobs:
     - name: 修补镜像
       run: |
         if [ -f init_boot.img ]; then
-          magisk --install-module magisk.zip -P ./init_boot.img
+          magisk --install-module Magisk.zip -P ./init_boot.img
         else
-          magisk --install-module magisk.zip -P ./boot.img
+          magisk --install-module Magisk.zip -P ./boot.img
         fi
 
     - name: 创建 release
