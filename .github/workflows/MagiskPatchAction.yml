@@ -1,0 +1,75 @@
+name: MagiskPatchAction
+
+on:
+  workflow_dispatch:
+    inputs:
+      rom-url:
+        description: 'ROM 下载直链'
+
+jobs:
+  magisk-patch-boot:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
+
+    - name: 安装依赖文件
+      run: |
+        sudo apt update
+        sudo apt install -y wget unzip
+
+    - name: 下载 ROM
+      id: download-rom
+      run: |
+        url=${{ github.event.inputs.rom-url }}
+        wget "$url" -O rom.zip
+        unzip rom.zip
+
+    - name: 修补 boot.img
+      id: patch-boot
+      run: |
+        if [ -e "$(pwd)/boot.img" ]; then
+          magisk --patch "$(pwd)/boot.img"
+        elif [ -e "$(pwd)/init_boot.img" ]; then
+          magisk --patch "$(pwd)/init_boot.img"
+        else
+          echo "Error: No boot image found"
+          exit 1
+        fi
+        mv "$(pwd)/magisk_patched.img" "$(pwd)/magisk_patched_boot.img"
+
+    - name: 修补 init_boot.img
+      id: patch-init-boot
+      run: |
+        if [ -e "$(pwd)/init_boot.img" ]; then
+          magisk --patch "$(pwd)/init_boot.img"
+          mv "$(pwd)/magisk_patched.img" "$(pwd)/magisk_patched_init_boot.img"
+        fi
+
+    - name: 创建 release
+      uses: actions/create-release@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: v${{ github.run_number }}
+        release_name: Release v${{ github.run_number }}
+        body: 'Magisk patched boot and init_boot images'
+        draft: false
+        prerelease: false
+
+    - name: 上传修补完成的镜像
+      uses: actions/upload-release-asset@v1.0.1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create-release.outputs.upload_url }}
+        asset_path: |
+          $(pwd)/magisk_patched_boot.img
+          $(pwd)/magisk_patched_init_boot.img
+        asset_name: |
+          magisk_patched_boot.img
+          magisk_patched_init_boot.img
+        asset_content_type: |
+          application/octet-stream
+          application/octet-stream
