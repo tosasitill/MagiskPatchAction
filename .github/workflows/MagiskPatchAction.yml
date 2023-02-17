@@ -34,6 +34,16 @@ jobs:
         # Extract zip file
         unzip *.zip
 
+    - name: 安装 Magisk
+      run: |
+        wget https://github.com/topjohnwu/Magisk/releases/download/$(wget -q -O - https://api.github.com/repos/topjohnwu/Magisk/releases/latest | grep tag_name | cut -d '"' -f 4)/Magisk-$(wget -q -O - https://api.github.com/repos/topjohnwu/Magisk/releases/latest | grep tag_name | cut -d '"' -f 4).zip
+        unzip Magisk-*.zip magisk -d .
+        rm Magisk-*.zip
+
+    - name: 设置环境变量
+      run: |
+        export PATH=$PATH:/path/to/magisk
+
     - name: 修补镜像
       run: |
         if [ -f init_boot.img ]; then
