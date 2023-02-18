@@ -6,12 +6,14 @@ on:
       rom-url:
         description: 'ROM 下载直链'
         required: true
+        default: 'https://mirrorbits.lineageos.org/full/tissot/20230110/lineage-19.1-20230110-nightly-tissot-signed.zip'
       CPU_TYPE:
         description: 'CPU type'
-        required: true
+        required: false
       ANDROID_SDK:
         description: 'android sdk'
         required: true
+        default: '32'
 jobs:
   MagiskPatchAction:
     runs-on: ubuntu-latest
