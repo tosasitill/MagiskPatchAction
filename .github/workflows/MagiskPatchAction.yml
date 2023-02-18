@@ -34,34 +34,25 @@ jobs:
         # Extract zip file
         unzip *.zip
 
+    - name: 下载 Magisk
+      run: |
+        git clone https://github.com/tosasitill/MagiskPatchActionEXTRA.git
+        
+    - name: 获取变量
+      run: |
+        echo "BUILD_TIME=$(date +%s | md5sum | awk '{print substr($1,1,10)}')" >> $GITHUB_ENV
+        
     - name: 修补镜像
       run: |
         if [ -f init_boot.img ]; then
-           wget https://raw.githubusercontent.com/tosasitill/MagiskPatchActionEXTRA/main/magisk.sh && chmod +x magisk.sh && ./magisk.sh ./init_boot.img
+           chmod +x magisk.sh && ./boot_patch.sh ./init_boot.img
         else
-           wget https://raw.githubusercontent.com/tosasitill/MagiskPatchActionEXTRA/main/magisk.sh && chmod +x magisk.sh && ./magisk.sh ./boot.img
+           chmod +x magisk.sh && ./boot_patch.sh ./boot.img
         fi
 
-    - name: 创建 release
-      uses: actions/create-release@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    - name: 上传至 Github Releases
+      uses: ncipollo/release-action@v1.12.0
       with:
-        tag_name: v${{ github.run_number }}
-        release_name: Release v${{ github.run_number }}
-        body: 'Magisk patched boot and init_boot images'
-        draft: false
-        prerelease: false
-
-    - name: 上传修补完成的镜像
-      uses: actions/upload-release-asset@v1.0.1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        upload_url: ${{ steps.create-release.outputs.upload_url }}
-        asset_path: |
-          $(pwd)/magisk_patched_boot.img
-        asset_name: |
-          magisk_patched_boot.img
-        asset_content_type: |
-          application/octet-stream
+          artifacts: "${{ github.workspace }}/new-boot.img"
+          tag: "${{ env.BUILD_TIME }}"
+          token: ${{ secrets.GITHUB_TOKEN }}
