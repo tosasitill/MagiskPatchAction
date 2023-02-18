@@ -52,6 +52,7 @@ jobs:
     - name: 获取变量
       run: |
         echo "BUILD_TIME=$(date +%s | md5sum | awk '{print substr($1,1,10)}')" >> $GITHUB_ENV
+        TYPE=${{ github.event.inputs.CPU_TYPE }}
         
     - name: 修补镜像
       run: |
