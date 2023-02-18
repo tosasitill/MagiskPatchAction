@@ -56,9 +56,9 @@ jobs:
     - name: 修补镜像
       run: |
         if [ -f init_boot.img ]; then
-           sh ./boot_patch.sh ./payload/init_boot.img
+           sh '${{ github.workspace }}/payload/MagiskPatchActionEXTRA/boot_patch.sh' '${{ github.workspace }}/payload/init_boot.img' 
         else
-           sh ./boot_patch.sh ./payload/boot.img
+           sh '${{ github.workspace }}/payload/MagiskPatchActionEXTRA/boot_patch.sh' '${{ github.workspace }}/payload/boot.img' 
         fi
 
     - name: 上传至 Github Releases
