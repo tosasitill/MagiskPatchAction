@@ -25,6 +25,7 @@ jobs:
         sudo apt update
         sudo apt install -y wget unzip binwalk curl
         
+        
     - name: 下载 ROM 并提取 Payload.bin
       id: download-rom
       run: |
@@ -39,10 +40,12 @@ jobs:
         fi
         # Extract zip file
         unzip *.zip
-
+        
     - name: 下载 Magisk
       run: |
         git clone https://github.com/tosasitill/MagiskPatchActionEXTRA.git
+        cd MagiskPatchActionEXTRA/
+
         
     - name: 获取变量
       run: |
@@ -51,9 +54,9 @@ jobs:
     - name: 修补镜像
       run: |
         if [ -f init_boot.img ]; then
-           chmod +x boot_patch.sh && ./boot_patch.sh ./init_boot.img
+           chmod +x boot_patch.sh && sh ./boot_patch.sh ./payload/init_boot.img
         else
-           chmod +x boot_patch.sh && ./boot_patch.sh ./boot.img
+           chmod +x boot_patch.sh && sh ./boot_patch.sh ./payload/boot.img
         fi
 
     - name: 上传至 Github Releases
