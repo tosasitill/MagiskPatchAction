@@ -66,10 +66,9 @@ jobs:
     - name: 修补镜像
       run: |
         if [ -f init_boot.img ]; then
-           ls
-           sh ./boot_patch.sh '$HOME/payload_dumper_go/init_boot.img' 
+           ./boot_patch.sh '$HOME/payload_dumper_go/init_boot.img' 
         else
-           sh ./boot_patch.sh '$HOME/payload_dumper_go/boot.img' 
+           ./boot_patch.sh '$HOME/payload_dumper_go/boot.img' 
         fi
 
     - name: 上传至 Github Releases
