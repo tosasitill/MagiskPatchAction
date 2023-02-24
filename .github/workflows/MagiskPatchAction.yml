@@ -66,9 +66,10 @@ jobs:
     - name: 修补镜像
       run: |
         if [ -f init_boot.img ]; then
-           sudo sh '~/payload_dumper_go/MagiskPatchActionEXTRA/boot_patch.sh' '~/payload_dumper_go/init_boot.img' 
+           ls
+           sh ./boot_patch.sh '$HOME/payload_dumper_go/init_boot.img' 
         else
-           sudo sh '~/payload_dumper_go/MagiskPatchActionEXTRA/boot_patch.sh' '~/payload_dumper_go/boot.img' 
+           sh ./boot_patch.sh '$HOME/payload_dumper_go/boot.img' 
         fi
 
     - name: 上传至 Github Releases
