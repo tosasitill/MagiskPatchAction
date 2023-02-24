@@ -14,6 +14,11 @@ on:
         description: 'android sdk'
         required: true
         default: '32'
+        
+env:
+  TZ: Asia/Shanghai
+  Payload_Dumper_Go_Url: https://github.com/ssut/payload-dumper-go/releases/download/1.2.2/payload-dumper-go_1.2.2_linux_amd64.tar.gz
+  
 jobs:
   MagiskPatchAction:
     runs-on: ubuntu-latest
@@ -27,22 +32,34 @@ jobs:
         sudo apt update
         sudo apt install -y wget unzip binwalk curl
         
-        
-    - name: 下载 ROM 并提取 Payload.bin
-      id: download-rom
+    - name: 清理磁盘空间
       run: |
-        url=${{ github.event.inputs.rom-url }}
-        mkdir payload
-        cd payload
-        curl --silent --location --remote-name "$url"
-        unzip *.zip
-        # Check if payload.bin exists, and convert it to zip format if necessary
-        if [ -f payload.bin ]; then
-          git clone https://github.com/vm03/payload_dumper.git
-          mv '${{ github.workspace }}/payload/payload_dumper/*' '${{ github.workspace }}/payload/'
-          python payload_dumper.py payload.bin
-        fi
+        docker rmi `docker images -q`
+        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
+        sudo -E apt-get -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php*
+        sudo -E apt-get -y autoremove --purge
+        sudo -E apt-get clean 
         
+    - name: 克隆 Payload 解包源代码
+      run: |
+       cd ~
+       mkdir -p ~/payload_dumper_go
+       wget -O payload_dumper_go.tar.gz $Payload_Dumper_Go_Url
+       tar -C ~/payload_dumper_go/ -zxvf payload_dumper_go.tar.gz
+       
+    - name: 下载 ROM 并提取 boot.img/init_boot.img
+      run: |
+       cd ~
+       wget -O rom.zip ${{ github.event.inputs.ROM_URL }}
+       cd ~
+       unzip rom.zip -d payload_dumper_go
+       if [ -f payload.bin ]; then
+          cd ~
+          cd payload_dumper_go
+          ./payload-dumper-go -o ~/payload_dumper_go -p boot payload.bin
+          ./payload-dumper-go -o ~/payload_dumper_go -p init_boot payload.bin
+        fi
+    
     - name: 下载 Magisk
       run: |
         git clone https://github.com/tosasitill/MagiskPatchActionEXTRA.git
@@ -57,14 +74,14 @@ jobs:
     - name: 修补镜像
       run: |
         if [ -f init_boot.img ]; then
-           sudo sh '${{ github.workspace }}/payload/MagiskPatchActionEXTRA/boot_patch.sh' '${{ github.workspace }}/payload/init_boot.img' 
+           sudo sh '~/payload_dumper_go/MagiskPatchActionEXTRA/boot_patch.sh' '~/payload_dumper_go/init_boot.img' 
         else
-           sudo sh '${{ github.workspace }}/payload/MagiskPatchActionEXTRA/boot_patch.sh' '${{ github.workspace }}/payload/boot.img' 
+           sudo sh '~/payload_dumper_go/MagiskPatchActionEXTRA/boot_patch.sh' '~/payload_dumper_go/boot.img' 
         fi
 
     - name: 上传至 Github Releases
       uses: ncipollo/release-action@v1.12.0
       with:
-          artifacts: "${{ github.workspace }}/payload/MagiskPatchActionEXTRA/new-boot.img"
+          artifacts: "~/payload_dumper_go/MagiskPatchActionEXTRA/new-boot.img"
           tag: "${{ env.BUILD_TIME }}"
           token: ${{ secrets.GITHUB_TOKEN }}
