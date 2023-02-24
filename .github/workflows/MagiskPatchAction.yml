@@ -33,15 +33,12 @@ jobs:
       run: |
         url=${{ github.event.inputs.rom-url }}
         curl --silent --location --remote-name "$url"
+        unzip *.zip
         # Check if payload.bin exists, and convert it to zip format if necessary
         if [ -f payload.bin ]; then
-          mkdir payload
-          dd if=payload.bin of=payload.zip bs=1 skip=202
-          unzip payload.zip -d payload/
-          cd payload/
+          git clone https://github.com/vm03/payload_dumper.git
+          python payload_dumper.py payload.bin
         fi
-        # Extract zip file
-        unzip *.zip
         
     - name: 下载 Magisk
       run: |
