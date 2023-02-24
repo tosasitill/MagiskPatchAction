@@ -39,7 +39,7 @@ jobs:
         # Check if payload.bin exists, and convert it to zip format if necessary
         if [ -f payload.bin ]; then
           git clone https://github.com/vm03/payload_dumper.git
-          mv /payload/payload_dumper/* /payload/
+          mv '${{ github.workspace }}/payload/payload_dumper/*' '${{ github.workspace }}/payload/'
           python payload_dumper.py payload.bin
         fi
         
