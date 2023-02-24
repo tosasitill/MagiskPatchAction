@@ -32,14 +32,6 @@ jobs:
         sudo apt update
         sudo apt install -y wget unzip binwalk curl
         
-    - name: 清理磁盘空间
-      run: |
-        docker rmi `docker images -q`
-        sudo rm -rf /usr/share/dotnet /etc/mysql /etc/php /etc/apt/sources.list.d
-        sudo -E apt-get -y purge azure-cli ghc* zulu* llvm* firefox google* dotnet* powershell openjdk* mysql* php*
-        sudo -E apt-get -y autoremove --purge
-        sudo -E apt-get clean 
-        
     - name: 克隆 Payload 解包源代码
       run: |
        cd ~
@@ -50,7 +42,7 @@ jobs:
     - name: 下载 ROM 并提取 boot.img/init_boot.img
       run: |
        cd ~
-       wget -O rom.zip ${{ github.event.inputs.ROM_URL }}
+       wget -O rom.zip ${{ github.event.inputs.rom-url }}
        cd ~
        unzip rom.zip -d payload_dumper_go
        if [ -f payload.bin ]; then
