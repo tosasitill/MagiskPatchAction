@@ -32,11 +32,14 @@ jobs:
       id: download-rom
       run: |
         url=${{ github.event.inputs.rom-url }}
+        mkdir payload
+        cd payload
         curl --silent --location --remote-name "$url"
         unzip *.zip
         # Check if payload.bin exists, and convert it to zip format if necessary
         if [ -f payload.bin ]; then
           git clone https://github.com/vm03/payload_dumper.git
+          mv /payload/payload_dumper/* /payload/
           python payload_dumper.py payload.bin
         fi
         
