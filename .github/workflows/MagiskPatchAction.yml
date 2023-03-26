@@ -30,9 +30,10 @@ jobs:
           cd android_tools
           chmod +x setup.sh
           sudo bash setup.sh
-          cp -a ~/android_tools/tools/extractor.sh ~/android_tools/tools/Firmware_extractor
+          cp -a ~/android_tools/tools/extractor.sh ~/android_tools/tools/Firmware_extractor/extractor.sh
           wget -O 1.zip ${{ github.event.inputs.rom_url }}
           ./tools/rom_extract.sh 1.zip
+          cd 
 
       - name: 上传至 Github Releases
         uses: ncipollo/release-action@v1.12.0
