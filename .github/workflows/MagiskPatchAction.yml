@@ -20,7 +20,8 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install python3-pip
           pip3 install adbutils
-          echo "BUILD_sTIME=$(TZ=Asia/Shanghai date -d @$(date +%s) +'%Y%m%d')" >> $GITHUB_ENV
+          echo "BUILD_sTIME=$(TZ=Asia/Shanghai date -d @$(date +%s) +'%Y-%m-%d %H:%M:%S %Z')" | sed 's/ //g' >> $GITHUB_ENV
+
 
       - name: Download ROM and extract boot image
         run: |
@@ -37,6 +38,6 @@ jobs:
         uses: ncipollo/release-action@v1.12.0
         with:
           artifacts: "~/android_tools/dumps/1/*"
-          tag: "BOOT_IMG"
+          tag: "BOOT_IMG_${{ env.BUILD_TIME }}"
           token: ${{ secrets.GITHUB_TOKEN }}
 
