@@ -6,6 +6,7 @@ on:
       rom_url:
         description: 'ROM download URL'
         required: true
+        default: 'https://mirrorbits.lineageos.org/full/tissot/20230321/lineage-19.1-20230321-nightly-tissot-signed.zip'
 
 jobs:
   extract_boot_image:
