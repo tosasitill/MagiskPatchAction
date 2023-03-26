@@ -29,7 +29,6 @@ jobs:
           sudo bash setup.sh
           wget -O 1.zip ${{ github.event.inputs.rom_url }}
           ./tools/rom_extract.sh 1.zip
-          touch build_info.txt
 
       - name: Upload to Github Releases
         uses: ncipollo/release-action@v1.12.0
