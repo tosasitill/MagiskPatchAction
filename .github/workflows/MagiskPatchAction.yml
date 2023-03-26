@@ -36,6 +36,6 @@ jobs:
         uses: ncipollo/release-action@v1.12.0
         with:
           artifacts: "~/android_tools/boot.img"
-          tag: "${{ env.BUILD_sTIME }}"
+          tag: "114514"
           token: ${{ secrets.GITHUB_TOKEN }}
 
