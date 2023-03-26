@@ -35,6 +35,5 @@ jobs:
         with:
             artifacts: "~/android_tools/boot.img"
             tag: "Uploaded boot.img"
-            bodyFile: "~/android_tools/build_info.txt"
             token: ${{ secrets.GITHUB_TOKEN }}
 
