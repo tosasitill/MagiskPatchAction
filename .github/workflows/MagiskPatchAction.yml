@@ -25,17 +25,18 @@ jobs:
       - name: Download ROM and extract boot image
         run: |
           cd ~
-          git clone https://github.com/ShivamKumarJha/android_tools --depth=1
+          git clone https://github.com/tosasitill/android_tools.git --depth=1
           cd android_tools
           chmod +x setup.sh
           sudo bash setup.sh
+          cp -a ~/android_tools/tools/extractor.sh ~/android_tools/tools/Firmware_extractor
           wget -O 1.zip ${{ github.event.inputs.rom_url }}
           ./tools/rom_extract.sh 1.zip
 
       - name: 上传至 Github Releases
         uses: ncipollo/release-action@v1.12.0
         with:
-          artifacts: "~/android_tools/boot.img"
-          tag: "114514"
+          artifacts: "~/android_tools/1/*"
+          tag: "BOOT_IMG"
           token: ${{ secrets.GITHUB_TOKEN }}
 
