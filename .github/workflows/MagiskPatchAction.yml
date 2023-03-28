@@ -27,7 +27,7 @@ jobs:
           cd ~
           git clone --recurse-submodules https://github.com/tosasitill/Firmware_extractor.git
           cd Firmware_extractor
-          wget ${{ github.event.inputs.rom_url }} -o firmware.zip
+          wget -O firmware.zip ${{ github.event.inputs.rom_url }}
           ./extractor.sh firmware.zip
           touch build_info.txt
           cd out
