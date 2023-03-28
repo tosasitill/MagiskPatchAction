@@ -1,12 +1,11 @@
-name: Extract Boot Image
+name: 提取 boot.img / init_boot.img
 
 on:
   workflow_dispatch:
     inputs:
       rom_url:
-        description: 'ROM download URL'
+        description: 'ROM 下载直链'
         required: true
-        default: 'https://mirrorbits.lineageos.org/full/tissot/20230321/lineage-19.1-20230321-nightly-tissot-signed.zip'
 
 jobs:
   extract_boot_image:
@@ -15,31 +14,30 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Install dependencies
+      - name: 安装依赖
         run: |
           sudo apt-get update
           sudo apt-get -y install python3-pip
-          pip3 install adbutils
-          echo "BUILD_sTIME=$(TZ=Asia/Shanghai date -d @$(date +%s) +'%Y-%m-%d %H:%M:%S %Z')" | sed 's/ //g' >> $GITHUB_ENV
+          apt install unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract rename
+          apt install liblzma-dev python-pip brotli lz4
+          pip install backports.lzma protobuf pycrypto
 
-
-      - name: Download ROM and extract boot image
+      - name: 提取镜像
         run: |
           cd ~
-          git clone https://github.com/tosasitill/android_tools.git --depth=1
-          cd android_tools
-          chmod +x setup.sh
-          sudo bash setup.sh
-          cp -a ~/android_tools/tools/extractor.sh ~/android_tools/tools/Firmware_extractor/extractor.sh
-          wget -O 1.zip ${{ github.event.inputs.rom_url }}
-          ./tools/rom_extract.sh 1.zip
-          cd ~/android_tools/dumps/1
+          git clone --recurse-submodules https://github.com/tosasitill/Firmware_extractor.git
+          cd Firmware_extractor
+          wget ${{ github.event.inputs.rom_url }} -o firmware.zip
+          ./extractor.sh firmware.zip
+          touch build_info.txt
+          cd out
           ls
 
-      - name: 上传至 Github Releases
+      - name: 上传镜像
         uses: ncipollo/release-action@v1.12.0
         with:
-          artifacts: "~/android_tools/dumps/1/*"
-          tag: "BOOT_IMG_${{ env.BUILD_TIME }}"
-          token: ${{ secrets.GITHUB_TOKEN }}
+            artifacts: "~/Firmware_extractor/out/*"
+            tag: "Uploaded boot.img"
+            bodyFile: "~/Firmware_extractor/build_info.txt"
+            token: ${{ secrets.GITHUB_TOKEN }}
 
