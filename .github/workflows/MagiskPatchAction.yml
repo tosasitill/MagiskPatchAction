@@ -33,7 +33,8 @@ jobs:
           cp -a ~/android_tools/tools/extractor.sh ~/android_tools/tools/Firmware_extractor/extractor.sh
           wget -O 1.zip ${{ github.event.inputs.rom_url }}
           ./tools/rom_extract.sh 1.zip
-          cd 
+          cd ~/android_tools/dumps/1
+          ls
 
       - name: 上传至 Github Releases
         uses: ncipollo/release-action@v1.12.0
