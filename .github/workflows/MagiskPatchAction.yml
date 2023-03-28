@@ -19,7 +19,7 @@ jobs:
           sudo apt-get update
           sudo apt-get -y install python3-pip
           sudo apt install unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract rename
-          sudo apt install liblzma-dev python-pip brotli lz4
+          sudo apt install liblzma-dev brotli lz4
           pip3 install backports.lzma protobuf pycrypto
 
       - name: 提取镜像
