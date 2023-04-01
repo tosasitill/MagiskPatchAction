@@ -23,7 +23,7 @@ jobs:
           sudo apt install liblzma-dev brotli lz4
           pip3 install backports.lzma protobuf pycrypto
           pip install protobuf==3.20
-          BUILD_TIME=$(TZ=UTC-8 date -u +"%Y%m%d%H%M%S")
+          BUILD_TIME=$(TZ=UTC-8 date -u +"%m%d%H%M")
           echo "BUILD_TIME=$BUILD_TIME" >> $GITHUB_ENV
 
       - name: 提取镜像
@@ -31,14 +31,19 @@ jobs:
           cd ~
           git clone --recurse-submodules https://github.com/tosasitill/Firmware_extractor.git
           cd Firmware_extractor
-          PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
           wget -O firmware.zip -q ${{ github.event.inputs.rom_url }}
           ./extractor.sh firmware.zip
+          cd ${{ github.workspace }}
+          touch info.md
+          echo "提交日期：$(TZ=UTC-8 date -u '+%Y-%m-%d %H:%M:%S')" >> info.md
+          echo "ROM 下载直链：${{ github.event.inputs.rom_url }}" >> info.md
+
 
       - name: 上传镜像
         uses: ncipollo/release-action@v1.12.0
         with:
             artifacts: "~/Firmware_extractor/out/*"
+            bodyfile: "${{ github.workspace }}/info.md"
             tag: "OUTPUT_${{ env.BUILD_TIME }}"
             token: ${{ secrets.GITHUB_TOKEN }}
 
