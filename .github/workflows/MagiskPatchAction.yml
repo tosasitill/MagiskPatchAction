@@ -32,8 +32,10 @@ jobs:
           PROTOCOL_BUFFERS_PYTHON_IMPLEMENTATION=python
           wget -O firmware.zip -q ${{ github.event.inputs.rom_url }}
           ./extractor.sh firmware.zip
-          touch build_info.txt
           cd out
+          ls
+          cd ~
+          touch build_info.txt
           ls
 
       - name: 上传镜像
@@ -41,6 +43,6 @@ jobs:
         with:
             artifacts: "~/Firmware_extractor/out/*"
             tag: "Uploaded boot.img"
-            bodyFile: "~/Firmware_extractor/build_info.txt"
+            bodyFile: "~/build_info.txt"
             token: ${{ secrets.GITHUB_TOKEN }}
 
