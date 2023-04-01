@@ -23,7 +23,7 @@ jobs:
           sudo apt install liblzma-dev brotli lz4
           pip3 install backports.lzma protobuf pycrypto
           pip install protobuf==3.20
-          BUILD_TIME=$(TZ=Asia/Shanghai date -u +"%m%d%H%M")
+          BUILD_TIME=$(TZ=Asia/Shanghai date +"%m%d%H%M")
           echo "BUILD_TIME=$BUILD_TIME" >> $GITHUB_ENV
 
       - name: 提取镜像
