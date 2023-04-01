@@ -35,7 +35,7 @@ jobs:
           ./extractor.sh firmware.zip
           cd ${{ github.workspace }}
           touch info.md
-          echo "提交日期：$(TZ=UTC-8 date -u '+%Y-%m-%d %H:%M:%S')" >> info.md
+          echo "提交日期：$(TZ=Asia/Shanghai date '+%Y-%m-%d %H:%M:%S')" >> info.md
           echo "ROM 下载直链：${{ github.event.inputs.rom_url }}" >> info.md
 
 
