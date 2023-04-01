@@ -22,6 +22,7 @@ jobs:
           sudo apt install unace unrar zip unzip p7zip-full p7zip-rar sharutils rar uudeview mpack arj cabextract rename
           sudo apt install liblzma-dev brotli lz4
           pip3 install backports.lzma protobuf pycrypto
+          pip install protobuf==3.20
 
       - name: 提取镜像
         run: |
